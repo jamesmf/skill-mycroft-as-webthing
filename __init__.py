@@ -32,7 +32,7 @@ class MycroftAsWoTSkill(MycroftSkill):
 
     # The constructor of the skill, which calls MycroftSkill's constructor
     def __init__(self):
-        super(MycroftAsWoTSkill, self).__init__(name="RasaSkill")
+        super(MycroftAsWoTSkill, self).__init__(name="MIoTSkill")
         self.thing = self.make_thing()
         self.server = None
         self.server_running = False
@@ -58,7 +58,7 @@ class MycroftAsWoTSkill(MycroftSkill):
         # If adding more than one thing, use MultipleThings() with a name.
         # In the single thing case, the thing's name will be broadcast.
         self.server = WebThingServer(SingleThing(self.thing), port=9191)
-        asyncio.set_event_loop(asyncio.new_event_loop())
+        # asyncio.set_event_loop(asyncio.new_event_loop())
         try:
             self.server.start()
         except KeyboardInterrupt:
