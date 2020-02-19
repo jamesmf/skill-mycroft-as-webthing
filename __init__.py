@@ -5,7 +5,7 @@ from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
 from webthing import Action, Event, Property, SingleThing, Thing, Value, WebThingServer
-from mycroft_bus_client import MessageBusClient, Message
+from mycroft.messagebus.message import Message
 import logging
 import time
 import uuid
@@ -32,7 +32,7 @@ class MycroftAsWoTSkill(MycroftSkill):
     # The constructor of the skill, which calls MycroftSkill's constructor
     def __init__(self):
         super(MycroftAsWoTSkill, self).__init__(name="RasaSkill")
-        self.client = MessageBusClient()
+        self.client = self._bus
         self.thing = make_thing()
 
         self.run_server()
