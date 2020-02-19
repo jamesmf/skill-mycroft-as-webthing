@@ -13,6 +13,11 @@ import uuid
 
 
 class QuestionAction(Action):
+    """
+    This action sends questions to Mycroft. It can be accessed through the
+    Mozilla IoT Gateway
+    """
+
     def __init__(self, thing, input_):
         Action.__init__(self, uuid.uuid4().hex, thing, "question", input_=input_)
 
@@ -24,13 +29,16 @@ class QuestionAction(Action):
 
 
 class SpeakEvent(Event):
+    """
+    The SpeakEvents will show up in the gateway's logs and will briefly
+    appear as a notifiaction on the UI.
+    """
+
     def __init__(self, thing, data):
         Event.__init__(self, thing, "mycroftsaid", data=data)
 
 
 class MycroftAsWoTSkill(MycroftSkill):
-
-    # The constructor of the skill, which calls MycroftSkill's constructor
     def __init__(self):
         super(MycroftAsWoTSkill, self).__init__(name="MIoTSkill")
         self.thing = self.make_thing()
@@ -41,22 +49,30 @@ class MycroftAsWoTSkill(MycroftSkill):
         self.define_server()
 
     def define_server(self):
+
+        # define the function that handles a message
         def print_utterance(message):
+            # if they asked a question, we'll get an answer
             if message.data.get("answer") is not None:
                 print('Mycroft said "{}"'.format(message.data.get("answer")))
                 self.thing.add_event(SpeakEvent(self.thing, message.data.get("answer")))
             else:
+                # otherwise just look for utterances
                 if "utterance" in message.data:
                     print('Mycroft said "{}"'.format(message.data["utterance"]))
                     self.thing.add_event(
                         SpeakEvent(self.thing, data=message.data["utterance"])
                     )
 
+        # watch for utterances and query responses
         self.bus.on("question:query.response", print_utterance)
         self.bus.on("speak", print_utterance)
 
-        # If adding more than one thing, use MultipleThings() with a name.
-        # In the single thing case, the thing's name will be broadcast.
+        # this is not working; it works when run by itself on port 8888,
+        # but here we need to use a different port. More importantly,
+        # we can't start the WebThingServer here. If we define a new event_loop,
+        # Mycroft hangs on skill initialization. If we don't, there's no loop
+        # so we get an error and the server is useless.
         self.server = WebThingServer(SingleThing(self.thing), port=9191)
         # asyncio.set_event_loop(asyncio.new_event_loop())
         try:
@@ -65,9 +81,11 @@ class MycroftAsWoTSkill(MycroftSkill):
             self.server.stop()
 
     def make_thing(self):
+        # define the Mycroft as a Thing
         thing = Thing(
             "test:mycroft:mycroft-hook-1234", "Mycroft", [], "A controller for Mycroft"
         )
+        # Defining this action makes it availabe in the gateway
         thing.add_available_action(
             "question",
             {
@@ -81,6 +99,7 @@ class MycroftAsWoTSkill(MycroftSkill):
             },
             QuestionAction,
         )
+        # these events will pop up in the UI when they are emitted
         thing.add_available_event(
             "mycroftsaid", {"description": "Mycroft Said:", "type": "string"}
         )
