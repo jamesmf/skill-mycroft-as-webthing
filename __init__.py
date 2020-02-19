@@ -6,6 +6,7 @@ from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
 from webthing import Action, Event, Property, SingleThing, Thing, Value, WebThingServer
 from mycroft.messagebus.message import Message
+import asyncio
 import logging
 import time
 import uuid
@@ -34,11 +35,12 @@ class MycroftAsWoTSkill(MycroftSkill):
         super(MycroftAsWoTSkill, self).__init__(name="RasaSkill")
         self.thing = self.make_thing()
         self.server = None
+        self.server_running = False
 
     def initialize(self):
-        self.run_server()
+        self.define_server()
 
-    def run_server(self):
+    def define_server(self):
         def print_utterance(message):
             if message.data.get("answer") is not None:
                 print('Mycroft said "{}"'.format(message.data.get("answer")))
@@ -56,6 +58,7 @@ class MycroftAsWoTSkill(MycroftSkill):
         # If adding more than one thing, use MultipleThings() with a name.
         # In the single thing case, the thing's name will be broadcast.
         self.server = WebThingServer(SingleThing(self.thing), port=9191)
+        asyncio.set_event_loop(asyncio.new_event_loop())
         try:
             self.server.start()
         except KeyboardInterrupt:
