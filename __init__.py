@@ -55,7 +55,7 @@ class MycroftAsWoTSkill(MycroftSkill):
 
         # If adding more than one thing, use MultipleThings() with a name.
         # In the single thing case, the thing's name will be broadcast.
-        self.server = WebThingServer(SingleThing(self.thing), port=8888)
+        self.server = WebThingServer(SingleThing(self.thing), port=9991)
         try:
             self.server.start()
         except KeyboardInterrupt:
