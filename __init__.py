@@ -32,9 +32,9 @@ class MycroftAsWoTSkill(MycroftSkill):
     # The constructor of the skill, which calls MycroftSkill's constructor
     def __init__(self):
         super(MycroftAsWoTSkill, self).__init__(name="RasaSkill")
-        self.client = self._bus
         self.thing = self.make_thing()
 
+    def initialize(self):
         self.run_server()
 
     def run_server(self):
@@ -49,10 +49,10 @@ class MycroftAsWoTSkill(MycroftSkill):
                         SpeakEvent(self.thing, data=message.data["utterance"])
                     )
 
-        self.client.on("question:query.response", print_utterance)
-        self.client.on("speak", print_utterance)
+        self.bus.on("question:query.response", print_utterance)
+        self.bus.on("speak", print_utterance)
 
-        self.client.run_in_thread()
+        self.bus.run_in_thread()
 
         # If adding more than one thing, use MultipleThings() with a name.
         # In the single thing case, the thing's name will be broadcast.
