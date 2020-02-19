@@ -33,6 +33,7 @@ class MycroftAsWoTSkill(MycroftSkill):
     def __init__(self):
         super(MycroftAsWoTSkill, self).__init__(name="RasaSkill")
         self.thing = self.make_thing()
+        self.server = None
 
     def initialize(self):
         self.run_server()
@@ -51,8 +52,6 @@ class MycroftAsWoTSkill(MycroftSkill):
 
         self.bus.on("question:query.response", print_utterance)
         self.bus.on("speak", print_utterance)
-
-        self.bus.run_in_thread()
 
         # If adding more than one thing, use MultipleThings() with a name.
         # In the single thing case, the thing's name will be broadcast.
