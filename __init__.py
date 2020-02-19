@@ -1,10 +1,9 @@
 # The MIT License (MIT)
 # Copyright (c) 2019 jamesmf
-
+from __future__ import division
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
-from __future__ import division
 from webthing import Action, Event, Property, SingleThing, Thing, Value, WebThingServer
 from mycroft_bus_client import MessageBusClient, Message
 import logging
