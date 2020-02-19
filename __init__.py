@@ -33,7 +33,7 @@ class MycroftAsWoTSkill(MycroftSkill):
     def __init__(self):
         super(MycroftAsWoTSkill, self).__init__(name="RasaSkill")
         self.client = self._bus
-        self.thing = make_thing()
+        self.thing = self.make_thing()
 
         self.run_server()
 
@@ -41,12 +41,12 @@ class MycroftAsWoTSkill(MycroftSkill):
         def print_utterance(message):
             if message.data.get("answer") is not None:
                 print('Mycroft said "{}"'.format(message.data.get("answer")))
-                self.thing.add_event(SpeakEvent(thing, message.data.get("answer")))
+                self.thing.add_event(SpeakEvent(self.thing, message.data.get("answer")))
             else:
                 if "utterance" in message.data:
                     print(message.data["utterance"], "utterance!")
                     self.thing.add_event(
-                        SpeakEvent(thing, data=message.data["utterance"])
+                        SpeakEvent(self.thing, data=message.data["utterance"])
                     )
 
         self.client.on("question:query.response", print_utterance)
@@ -56,7 +56,7 @@ class MycroftAsWoTSkill(MycroftSkill):
 
         # If adding more than one thing, use MultipleThings() with a name.
         # In the single thing case, the thing's name will be broadcast.
-        self.server = WebThingServer(SingleThing(thing), port=8888)
+        self.server = WebThingServer(SingleThing(self.thing), port=8888)
         try:
             self.server.start()
         except KeyboardInterrupt:
