@@ -45,7 +45,7 @@ class MycroftAsWoTSkill(MycroftSkill):
                 self.thing.add_event(SpeakEvent(self.thing, message.data.get("answer")))
             else:
                 if "utterance" in message.data:
-                    print(message.data["utterance"], "utterance!")
+                    print('Mycroft said "{}"'.format(message.data["utterance"]))
                     self.thing.add_event(
                         SpeakEvent(self.thing, data=message.data["utterance"])
                     )
@@ -55,7 +55,7 @@ class MycroftAsWoTSkill(MycroftSkill):
 
         # If adding more than one thing, use MultipleThings() with a name.
         # In the single thing case, the thing's name will be broadcast.
-        self.server = WebThingServer(SingleThing(self.thing), port=9991)
+        self.server = WebThingServer(SingleThing(self.thing), port=9191)
         try:
             self.server.start()
         except KeyboardInterrupt:
